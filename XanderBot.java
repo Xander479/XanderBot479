@@ -33,7 +33,6 @@ public class XanderBot {
 		
 		// Creates text area
 		JTextArea tweetInput = new JTextArea(10, 25);
-		JScrollPane scrollPane = new JScrollPane(tweetInput);
 		tweetInput.setLineWrap(true);
 		tweetInput.setWrapStyleWord(true);
 		Document tweetDocument = tweetInput.getDocument();
@@ -61,7 +60,7 @@ public class XanderBot {
 		// Creates tweet button
 		JButton tweetButton = new JButton("Tweet");
 		tweetButton.setMnemonic(KeyEvent.VK_T);
-		tweetButton.addActionListener(new TweetEvent(tweetDocument));
+		tweetButton.addActionListener(new TweetEvent(tweetInput));
 		c = new GridBagConstraints();
 		c.gridx = 1;
 		c.gridy = 1;
@@ -141,9 +140,11 @@ class GitHubEvent implements ActionListener {
 
 // Event sends the inputted text as a tweet
 class TweetEvent implements ActionListener {
-	TweetEvent(Document d) {
-		this.d = d;
+	TweetEvent(JTextArea tweetInput) {
+		this.tweetInput = tweetInput;
+		this.d = tweetInput.getDocument();
 	}
+	private JTextArea tweetInput;
 	private Document d;
 	
 	public void actionPerformed(ActionEvent event) {
@@ -155,14 +156,17 @@ class TweetEvent implements ActionListener {
 		else {
 			try {
 				Twitter twitter = new TwitterFactory().getInstance();
-				twitter.setOAuthConsumer(Setup.CONSUMER_KEY, Setup.CONSUMER_KEY_SECRET);
-				AccessToken accessToken = new AccessToken(Setup.ACCESS_TOKEN, Setup.ACCESS_TOKEN_SECRET);
+				twitter.setOAuthConsumer(CONSUMER_KEY, CONSUMER_KEY_SECRET);
+				AccessToken accessToken = new AccessToken(ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
 				
 				twitter.setOAuthAccessToken(accessToken);
 				
+				XanderBot.charsLeft.setText("Sending tweet...");
 				// THIS IS THE LINE WHICH SENDS THE TWEET
 				twitter.updateStatus(d.getText(0, d.getLength()));
 				// THIS IS THE LINE WHICH SENDS THE TWEET
+				tweetInput.setText("");
+				XanderBot.charsLeft.setText("Tweet sent!");
 			}
 			catch(TwitterException e) {
 				XanderBot.charsLeft.setText(e.toString());
