@@ -1,84 +1,86 @@
 package xander479;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.net.URI;
+import java.awt.event.KeyEvent;
+
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
+import xander479.events.BotEvent;
 
-import static xander479.Setup.*;
-
-public class XanderBot {
-	public final static int TWITTER_CHARACTER_LIMIT = 280;
+/**
+ * Opens a window with buttons which will start up either a Discord, Twitch, or Twitter bot. Closing this window will not close the bots' windows. 
+ * 
+ * @author Xander Clinton
+ * @version 1.0
+ * @see DiscordBot
+ * @see TwitchBot
+ * @see TwitterBot
+ */
+public class Launcher {
+	/**
+	 * Entry point into the program. Sets up the GUI and event listeners.
+	 * 
+	 * @param args ignored
+	 */
 	public static void main(String[] args) {
-		createAndDisplayGUI();
-	}
-	
-	static JLabel charsLeft = new JLabel();
-	static void createAndDisplayGUI() {
 		// Set up frame
 		JFrame frame = new JFrame("XanderBot479");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(600,400));
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(450, 250));
 		Container pane = frame.getContentPane();
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c;
 		
-		// Creates text area
-		JTextArea tweetInput = new JTextArea(10, 25);
-		tweetInput.setLineWrap(true);
-		tweetInput.setWrapStyleWord(true);
-		Document tweetDocument = tweetInput.getDocument();
-		tweetDocument.addDocumentListener(new TweetListener(tweetDocument));
+		// Create discord button
+		JButton discordButton = new JButton("Discord");
+		discordButton.setMnemonic(KeyEvent.VK_D);
+		discordButton.addActionListener(new BotEvent(BotEvent.DISCORD, frame));
+		discordButton.setPreferredSize(new Dimension(100, 30));
 		c = new GridBagConstraints();
 		c.gridx = 0;
-		c.gridwidth = 2;
 		c.gridy = 0;
 		c.weightx = 0.5;
 		c.weighty = 0.5;
-		c.insets = new Insets(3, 3, 3, 3);
-		c.fill = GridBagConstraints.BOTH;
-		pane.add(tweetInput, c);
+		c.insets = new Insets(5, 5, 5, 5);
+		pane.add(discordButton, c);
 		
-		// Label for remaining characters
-		charsLeft.setText("" + TWITTER_CHARACTER_LIMIT);
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 1;
-		c.anchor = GridBagConstraints.FIRST_LINE_END;
-		c.weightx = 0.5;
-		c.weighty = 0.25;
-		pane.add(charsLeft, c);
-		
-		// Creates tweet button
-		JButton tweetButton = new JButton("Tweet");
-		tweetButton.setMnemonic(KeyEvent.VK_T);
-		tweetButton.addActionListener(new TweetEvent(tweetInput));
+		// Create twitch button
+		JButton twitchButton = new JButton("Twitch");
+		twitchButton.setMnemonic(KeyEvent.VK_T);
+		twitchButton.addActionListener(new BotEvent(BotEvent.TWITCH, frame));
+		twitchButton.setPreferredSize(new Dimension(100, 30));
 		c = new GridBagConstraints();
 		c.gridx = 1;
-		c.gridy = 1;
-		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		c.gridy = 0;
 		c.weightx = 0.5;
-		c.weighty = 0.25;
-		c.insets = new Insets(0, 5, 0, 0);
+		c.weighty = 0.5;
+		c.insets = new Insets(5, 5, 5, 5);
+		pane.add(twitchButton, c);
 		
-		pane.add(tweetButton, c);
+		// Create twitter button
+		JButton twitterButton = new JButton("Twitter");
+		twitterButton.setMnemonic(KeyEvent.VK_W);
+		twitterButton.addActionListener(new BotEvent(BotEvent.TWITTER, frame));
+		twitterButton.setPreferredSize(new Dimension(100, 30));
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridwidth = 2;
+		c.gridy = 1;
+		c.weightx = 0.5;
+		c.weighty = 0.5;
+		c.insets = new Insets(5, 5, 5, 5);
+		pane.add(twitterButton, c);
 		
-		// Show frame and add menu bar
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 	
-	// Create menu bar
+	/**
+	 * 
+	 * @return the menu bar to be added to the frame 
+	 */
 	static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("About");
@@ -89,91 +91,5 @@ public class XanderBot {
 		menuItem.addActionListener(new GitHubEvent());
 		menu.add(menuItem);
 		return menuBar;
-	}
-}
-
-// Updates the label for remaining characters
-class TweetListener implements DocumentListener {
-	TweetListener(Document d) {
-		this.d = d;
-	}
-	private Document d;
-	
-	public void changedUpdate(DocumentEvent e) {
-		int chars = d.getLength();
-		XanderBot.charsLeft.setText("" + (XanderBot.TWITTER_CHARACTER_LIMIT - chars));
-	}
-	
-	public void insertUpdate(DocumentEvent e) {
-		this.changedUpdate(e);
-	}
-	
-	public void removeUpdate(DocumentEvent e) {
-		this.changedUpdate(e);
-	}
-}
-
-// Event takes you to the GitHub repo
-class GitHubEvent implements ActionListener {
-	public void actionPerformed(ActionEvent event) {
-		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-		if(desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-			try {
-				desktop.browse(new URI("https://github.com/Xander479/XanderBot479"));
-			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		else {
-			JFrame frame = new JFrame("Error");
-			frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			JLabel label = new JLabel("Your platform doesn't support this action.", JLabel.CENTER);
-			label.setPreferredSize(new Dimension(350, 50));
-			frame.getContentPane().add(label);
-			frame.pack();
-			frame.setLocationRelativeTo(null);
-			frame.setVisible(true);
-		}
-	}
-}
-
-// Event sends the inputted text as a tweet
-class TweetEvent implements ActionListener {
-	TweetEvent(JTextArea tweetInput) {
-		this.tweetInput = tweetInput;
-		this.d = tweetInput.getDocument();
-	}
-	private JTextArea tweetInput;
-	private Document d;
-	
-	public void actionPerformed(ActionEvent event) {
-		int chars = d.getLength();
-		// Won't allow you to send a tweet over the character limit
-		if(chars > XanderBot.TWITTER_CHARACTER_LIMIT) {
-			XanderBot.charsLeft.setText("You can only have " + XanderBot.TWITTER_CHARACTER_LIMIT + " characters in a tweet.");
-		}
-		else {
-			try {
-				Twitter twitter = new TwitterFactory().getInstance();
-				twitter.setOAuthConsumer(CONSUMER_KEY, CONSUMER_KEY_SECRET);
-				AccessToken accessToken = new AccessToken(ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
-				
-				twitter.setOAuthAccessToken(accessToken);
-				
-				XanderBot.charsLeft.setText("Sending tweet...");
-				// THIS IS THE LINE WHICH SENDS THE TWEET
-				twitter.updateStatus(d.getText(0, d.getLength()));
-				// THIS IS THE LINE WHICH SENDS THE TWEET
-				tweetInput.setText("");
-				XanderBot.charsLeft.setText("Tweet sent!");
-			}
-			catch(TwitterException e) {
-				XanderBot.charsLeft.setText(e.toString());
-			}
-			catch(BadLocationException e) {
-				XanderBot.charsLeft.setText(e.toString());
-			}
-		}	
 	}
 }
