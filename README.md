@@ -1,5 +1,15 @@
 # XanderBot479
 
-So far all this does is allow you to send tweets from the Java GUI. I plan on adding Twitch chat functionality, including a bot to send messages periodically.
+I'm reworking a few things so all it can do right now is activate the Discord bot, but it doesn't respond to anything.
+I'll update this readme when there's more to say.
 
-The keys/tokens in Setup.java have been censored on here for obvious reasons. When I finish the main project, I'll probably set something up to allow other people to use it too. For now, Twitter's documentation sucks so you'd have to set up a twitter developer account yourself and use the keys from an app you create yourself. Make sure to also include [twitter4j-core-4.0.7.jar](http://twitter4j.org/).
+---
+
+### Planned features:
+- Discord bot
+- Twitch
+  - Chat bot
+  - Chat client
+- Twitter
+  - Notification window
+  - Tweet window
