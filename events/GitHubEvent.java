@@ -10,13 +10,18 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class GitHubEvent implements ActionListener {
-
+	private String repoName;
+	
+	public GitHubEvent(String repoName) {
+		this.repoName = repoName;
+	}
+	
 	// Opens the GitHub repo for this project if the action is supported.
 	public void actionPerformed(ActionEvent e) {
 		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
 		if(desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
 			try {
-				desktop.browse(new URI("https://github.com/Xander479/XanderBot479"));
+				desktop.browse(new URI("https://github.com/Xander479/" + repoName));
 			}
 			catch(Exception ex) {
 				ex.printStackTrace();
