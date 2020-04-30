@@ -9,17 +9,9 @@ import java.net.URI;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-/**
- * Event listener which will open the GitHub repo for this project. 
- * 
- * @author Xander Clinton
- * @version 1.0
- */
 public class GitHubEvent implements ActionListener {
 
-	/**
-	 * Opens the GitHub repo for this project if the action is supported.
-	 */
+	// Opens the GitHub repo for this project if the action is supported.
 	public void actionPerformed(ActionEvent e) {
 		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
 		if(desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
