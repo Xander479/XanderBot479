@@ -71,7 +71,7 @@ public class Launcher {
 		menuBar.add(menu);
 		JMenuItem menuItem = new JMenuItem("GitHub repo link");
 		menuItem.setMnemonic(KeyEvent.VK_G);
-		menuItem.addActionListener(new GitHubEvent());
+		menuItem.addActionListener(new GitHubEvent("XanderBot479"));
 		menu.add(menuItem);
 		return menuBar;
 	}
