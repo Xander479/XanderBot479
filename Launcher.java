@@ -7,21 +7,7 @@ import javax.swing.*;
 
 import xander479.events.BotEvent;
 
-/**
- * Opens a window with buttons which will start up either a Discord, Twitch, or Twitter bot. Closing this window will not close the bots' windows. 
- * 
- * @author Xander Clinton
- * @version 1.0
- * @see DiscordBot
- * @see TwitchBot
- * @see TwitterBot
- */
 public class Launcher {
-	/**
-	 * Entry point into the program. Sets up the GUI and event listeners.
-	 * 
-	 * @param args ignored
-	 */
 	public static void main(String[] args) {
 		// Set up frame
 		JFrame frame = new JFrame("XanderBot479");
@@ -77,10 +63,7 @@ public class Launcher {
 		frame.setVisible(true);
 	}
 	
-	/**
-	 * 
-	 * @return the menu bar to be added to the frame 
-	 */
+	// returns the menu bar to be added to the frame 
 	static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("About");
