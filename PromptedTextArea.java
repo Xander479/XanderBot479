@@ -14,7 +14,7 @@ import javax.swing.text.Document;
  * Much like with the HTML placeholder attribute, the placeholder text disappears once text is entered to the field. 
  * 
  * @author Xander Clinton
- * @version 1.1
+ * @version 1.2
  */
 public class PromptedTextArea extends JTextArea implements DocumentListener {	
 	private static final long serialVersionUID = 1L;
@@ -139,6 +139,26 @@ public class PromptedTextArea extends JTextArea implements DocumentListener {
 	public void setPlaceholder(String placeholder) {
 		this.placeholder = placeholder;
 		label.setText(" " + placeholder);
+	}
+	
+	/**
+	 * Getter method for the placeholder text's color.
+	 */
+	public Color getColor() {
+		return color;
+	}
+	
+	/**
+	 * Sets the placeholder text's color to the specified red, green, blue, and alpha values in the range (0 - 255).
+	 * 
+	 * @param r the red component
+	 * @param g the green component
+	 * @param b the blue component
+	 * @param a the alpha component
+	 */
+	public void setColor(int r, int g, int b, int a) {
+		color = new Color(r, g, b, a);
+		label.setForeground(color);
 	}
 	
 	/**
