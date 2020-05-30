@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 import xander479.events.BotEvent;
+import xander479.events.GitHubEvent;
 
 public class Launcher {
 	public static void main(String[] args) {
@@ -13,6 +14,7 @@ public class Launcher {
 		JFrame frame = new JFrame("XanderBot479");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setPreferredSize(new Dimension(450, 250));
+		frame.setIconImage(new ImageIcon("src/main/resources/icon.png").getImage());
 		Container pane = frame.getContentPane();
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c;
@@ -63,7 +65,7 @@ public class Launcher {
 		frame.setVisible(true);
 	}
 	
-	// returns the menu bar to be added to the frame 
+	// Return the menu bar to be added to the frame 
 	static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("About");
