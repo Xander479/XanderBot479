@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bot>
+
+<!-- The ** after the first word in <syntax> tags is both for styling, and to separate command names from their arguments. Same as the * surrounding arguments-->
+
+	<token>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</token>
+	<prefix>!</prefix>
+	<commands>
+	
+		<command>
+			<title>help</title>
+			<syntax>help** *&lt;optional: command&gt;*</syntax>
+			<description>Will display a list of commands, or display help about the specified command.</description>
+		</command>
+		
+		<command>
+			<title>changePrefix</title>
+			<syntax>changePrefix** *&lt;new prefix&gt;*</syntax>
+			<description>Changes the command prefix.</description>
+		</command>
+		
+		<command>
+			<title>addRole</title>
+			<syntax>addRole** *&lt;user name&gt; &lt;role name&gt;* **OR** *&lt;user ID&gt; &lt;role ID&gt;*</syntax>
+			<description>Gives the given user the given role.</description>
+		</command>
+		
+		<command>
+			<title>removeRole</title>
+			<syntax>removeRole** *&lt;user name&gt; &lt;role name&gt;* ** OR** *&lt;user ID&gt; &lt;role ID&gt;*</syntax>
+			<description>Removes the given role from the given user.</description>
+		</command>
+		
+		<command>
+			<title>disconnect</title>
+			<syntax>disconnect**</syntax>
+			<description>Disconnects the bot from Discord.</description>
+		</command>
+	
+	</commands>
+</bot>
