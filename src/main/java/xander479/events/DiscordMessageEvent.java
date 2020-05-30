@@ -57,6 +57,7 @@ public class DiscordMessageEvent implements MessageCreateListener {
 		String[] words = msg.split(" ");
 		TextChannel channel = event.getChannel();
 		MessageAuthor author = event.getMessageAuthor();
+		Server server = event.getServer().get();
 		
 		switch(words[0].substring(prefix.length())) {
 			case "help":
@@ -80,16 +81,7 @@ public class DiscordMessageEvent implements MessageCreateListener {
 			case "addRole":
 				if(event.isServerMessage()) {
 					if(words.length > 2 ) {
-						// Checks for longs first
-						try {
-							long user = Long.parseLong(words[1]);
-							long role = Long.parseLong(words[2]);
-							addRole(user, role, author, event.getServer().get(), channel);
-						}
-						// If one of the arguments isn't a long, try with strings
-						catch(NumberFormatException e) {
-							addRole(words[1], words[2], author, event.getServer().get(), channel);
-						}
+						manageRoles(words[1], words[2], ADD_ROLE, author, server, channel);
 					}
 					else {
 						help("addRole", channel);
@@ -103,7 +95,7 @@ public class DiscordMessageEvent implements MessageCreateListener {
 			case "removeRole":
 				if(event.isServerMessage()) {
 					if(words.length > 2) {
-						removeRole(words[1], words[2], event.getServer().get(), channel);
+						manageRoles(words[1], words[2], REMOVE_ROLE, author, server, channel);
 					}
 					else {
 						help("removeRole", channel);
@@ -194,62 +186,87 @@ public class DiscordMessageEvent implements MessageCreateListener {
 			channel.sendMessage(embed);
 		}
 	}
-
-	public static void addRole(String user, String role, MessageAuthor author, Server server, TextChannel channel) {
-		ArrayList<User> users = new ArrayList<User>(DiscordBot.getUsers(user, server));
-		List<Role> roles = server.getRolesByNameIgnoreCase(role);
+	
+	private final static int ADD_ROLE = 0;
+	private final static int REMOVE_ROLE = 1;
+	public static void manageRoles(String userName, String roleName, int action, MessageAuthor author, Server server, TextChannel channel) {
+		long userID = 0L;
+		long roleID = 0L;
+		boolean IDs = false;
+		try {
+			userID = Long.parseLong(userName);
+			roleID = Long.parseLong(roleName);
+			IDs = true;
+		}
+		catch(NumberFormatException e) {
+			// User and/or role was not a long, so names will be used instead
+			IDs = false;
+		}
+		User user = null;
+		Role role = null;
+		if(IDs) {
+			if(server.getMemberById(userID).isPresent() && server.getRoleById(roleID).isPresent()) {
+				user = server.getMemberById(userID).get();
+				role = server.getRoleById(roleID).get();
+			}
+			else {
+				EmbedBuilder embed = new EmbedBuilder()
+						.setTitle("Error")
+						.setDescription("This user and/or role doesn't exist.")
+						.setColor(EMBED_COLOR);
+				channel.sendMessage(embed);
+			}
+		}
+		else {
+			ArrayList<User> users = new ArrayList<User>(DiscordBot.getUsers(userName, server));
+			List<Role> roles = server.getRolesByNameIgnoreCase(roleName);
+			
+			// Tell the user to use IDs if there are duplicate user/role names
+			if(users.size() > 1 || roles.size() > 1) {
+				EmbedBuilder embed = new EmbedBuilder()
+						.setTitle("Error")
+						.setDescription("There are multiple users or roles with the same name. Please use `" + prefix + "addRole <user ID> <role ID>`.")
+						.setColor(EMBED_COLOR);
+				channel.sendMessage(embed);
+			}
+			// If there are no users/roles found with the given name...
+			else if(users.size() == 0 || roles.size() == 0) {
+				EmbedBuilder embed = new EmbedBuilder()
+						.setTitle("Error")
+						.setDescription("This user and/or role doesn't exist.")
+						.setColor(EMBED_COLOR);
+				channel.sendMessage(embed);
+			}
+			else {
+				user = users.get(0);
+				role = roles.get(0);
+			}
+		}
 		
-		// Tell the user to use the overloaded method if there are duplicate user/role names
-		if(users.size() > 1 || roles.size() > 1) {
-			EmbedBuilder embed = new EmbedBuilder()
-					.setTitle("Error")
-					.setDescription("There are multiple users or roles with the same name. Please use `" + prefix + "addRole <user ID> <role ID>`.")
-					.setColor(EMBED_COLOR);
-			channel.sendMessage(embed);
+		if(user != null && role != null) {
+			switch(action) {
+				case ADD_ROLE:
+					server.addRoleToUser(user,  role);
+					EmbedBuilder embed = new EmbedBuilder()
+							.setAuthor(author.getDisplayName(), null, author.getAvatar())
+							.setDescription("added the " + role.getName() + " role to " + user.getDisplayName(server) + ".")
+							.setColor(EMBED_COLOR);
+					channel.sendMessage(embed);
+					break;
+					
+				case REMOVE_ROLE:
+					server.removeRoleFromUser(user,  role);
+					embed = new EmbedBuilder()
+							.setAuthor(author.getDisplayName(), null, author.getAvatar())
+							.setDescription("removed the " + role.getName() + " role from " + user.getDisplayName(server) + ".")
+							.setColor(EMBED_COLOR);
+					channel.sendMessage(embed);
+					break;
+					
+				default:
+					System.err.println("Method was called with invalid int for 'action'.");
+					channel.sendMessage("Error with implemented method. Roles have not been changed.");
+			}
 		}
-		// If there are no users/roles found with the given name...
-		else if(users.size() == 0 || roles.size() == 0) {
-			EmbedBuilder embed = new EmbedBuilder()
-					.setTitle("Error")
-					.setDescription("This user and/or role doesn't exist.")
-					.setColor(EMBED_COLOR);
-			channel.sendMessage(embed);
-		}
-		// Add the role and confirm
-		else {
-			server.addRoleToUser(users.get(0), roles.get(0));
-			EmbedBuilder embed = new EmbedBuilder()
-					.setAuthor(author.getDisplayName(), null, author.getAvatar())
-					.setDescription("added the " + role + " role to " + user + ".")
-					.setColor(EMBED_COLOR);
-			channel.sendMessage(embed);
-		}
-	}
-	
-	public static void addRole(long userID, long roleID, MessageAuthor author, Server server, TextChannel channel) {
-		User user;
-		Role role;
-		if(server.getMemberById(userID).isPresent() && server.getRoleById(roleID).isPresent()) {
-			user = server.getMemberById(userID).get();
-			role = server.getRoleById(roleID).get();
-			server.addRoleToUser(user,  role);
-			EmbedBuilder embed = new EmbedBuilder()
-					.setAuthor(author.getDisplayName(), null, author.getAvatar())
-					.setDescription("added the " + role.getName() + " role to " + user.getDisplayName(server) + ".")
-					.setColor(EMBED_COLOR);
-			channel.sendMessage(embed);
-		}
-		else {
-			EmbedBuilder embed = new EmbedBuilder()
-					.setTitle("Error")
-					.setDescription("This user and/or role doesn't exist.")
-					.setColor(EMBED_COLOR);
-			channel.sendMessage(embed);
-		}
-	}
-	
-	public static void removeRole(String user, String role, Server server, TextChannel channel) {
-		//TODO add stuff
-		channel.sendMessage("This function is not yet implemented.");
 	}
 }
