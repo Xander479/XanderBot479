@@ -20,7 +20,7 @@ public class BotEvent implements ActionListener {
 		this.parent = parent;
 	}
 	
-	// Determines which bot to activate.
+	// Determine which bot to activate
 	public void actionPerformed(ActionEvent e) {
 		switch(type) {
 			case DISCORD:
