@@ -6,12 +6,30 @@
   <artifactId>xanderbot</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   
+  <repositories>
+  	<repository>
+  		<id>jcenter</id>
+  		<url>https://jcenter.bintray.com/</url>
+  	</repository>
+  	
+  	<repository>
+  		<id>jcenter-snapshot</id>
+  		<url>https://oss.jfrog.org/artifactory/libs-release/</url>
+  	</repository>
+  </repositories>
+  
   <dependencies>
   	<dependency>
   		<groupId>org.javacord</groupId>
   		<artifactId>javacord</artifactId>
   		<version>3.0.5</version>
   		<type>pom</type>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>com.github.twitch4j</groupId>
+  		<artifactId>twitch4j</artifactId>
+  		<version>1.0.0</version>
   	</dependency>
   	
   	<dependency>
