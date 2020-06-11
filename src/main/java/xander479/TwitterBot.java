@@ -19,7 +19,7 @@ public class TwitterBot {
 		createAndDisplayGUI();
 	}
 	
-	static JLabel charsLeft;
+	public static JLabel charsLeft;
 	void createAndDisplayGUI() {
 		// Set up frame
 		JFrame frame = new JFrame("Twitter");
@@ -35,7 +35,6 @@ public class TwitterBot {
 		tweetInput.setLineWrap(true);
 		tweetInput.setWrapStyleWord(true);
 		Document tweetDocument = tweetInput.getDocument();
-		tweetDocument.addDocumentListener(new TweetDocumentListener(tweetDocument));
 		c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridwidth = 2;
@@ -55,6 +54,8 @@ public class TwitterBot {
 		c.weightx = 0.5;
 		c.weighty = 0.1;
 		c.insets = new Insets(3, 3, 3, 3);
+		
+		tweetDocument.addDocumentListener(new TweetDocumentListener(tweetDocument, charsLeft));
 		pane.add(charsLeft, c);
 		
 		// Create tweet button
