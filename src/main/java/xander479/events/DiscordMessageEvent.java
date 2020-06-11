@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import xander479.DiscordBot;
+import xander479.Launcher;
 
 public class DiscordMessageEvent implements MessageCreateListener {
 	private final static String CONFIG_FILE = "src/main/resources/discord.xml";
@@ -35,7 +36,7 @@ public class DiscordMessageEvent implements MessageCreateListener {
 	
 	public DiscordMessageEvent() {
 		try {
-			config = DiscordBot.getConfig();
+			config = Launcher.getConfig(CONFIG_FILE);
 			prefix = config.getElementsByTagName("prefix").item(0).getTextContent();
 			
 			NodeList commandsNL = config.getElementsByTagName("title");

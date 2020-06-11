@@ -2,8 +2,16 @@ package xander479;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import xander479.events.BotEvent;
 import xander479.events.GitHubEvent;
@@ -76,5 +84,13 @@ public class Launcher {
 		menuItem.addActionListener(new GitHubEvent("XanderBot479"));
 		menu.add(menuItem);
 		return menuBar;
+	}
+	
+	// Return the config file passed as a String
+	public static Document getConfig(String path) throws IOException, ParserConfigurationException, SAXException {
+		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		Document config = builder.parse(new File(path));
+		config.getDocumentElement().normalize();
+		return config;
 	}
 }

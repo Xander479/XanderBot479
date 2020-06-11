@@ -3,21 +3,15 @@ package xander479;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 
 import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import xander479.events.DiscordMessageEvent;
 
@@ -29,7 +23,7 @@ public class DiscordBot {
 	static Document config;
 	static {
 		try {
-			config = getConfig();
+			config = Launcher.getConfig(CONFIG_FILE);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -60,7 +54,6 @@ public class DiscordBot {
 		
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
-		frame.setLocationByPlatform(true);
 		frame.setLocationRelativeTo(parent);
 		frame.setVisible(true);
 	}
@@ -75,16 +68,6 @@ public class DiscordBot {
 		JMenuItem menuItem = new JMenuItem("I'm working on it...");
 		menu.add(menuItem);
 		return menuBar;
-	}
-
-	// Convenience method for getting the discord.xml file.
-	public static Document getConfig() throws IOException, ParserConfigurationException, SAXException {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		File file = new File(CONFIG_FILE);
-		Document config = builder.parse(file);
-		config.getDocumentElement().normalize();
-		return config;
 	}
 
 	// Used within DiscordMessageEvent to assign roles etc.

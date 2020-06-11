@@ -11,7 +11,6 @@ import xander479.events.TweetEvent;
 
 public class TwitterBot {
 	public final static int TWITTER_CHAR_LIMIT = 280;
-	final static String CONFIG_FILE = "src/main/resources/twitter.xml";
 	Frame parent;
 	
 	public TwitterBot(Frame parent) {
