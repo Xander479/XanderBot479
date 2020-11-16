@@ -15,6 +15,7 @@ public class TwitterBot {
 	Frame parent;
 	
 	private TwitterBot(Frame parent) {
+		this.parent = parent;
 		createAndDisplayGUI();
 	}
 	
