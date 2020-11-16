@@ -24,7 +24,7 @@ public class BotEvent implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		switch(type) {
 			case DISCORD:
-				new DiscordBot(parent);
+				DiscordBot.getInstance(parent);
 				break;
 			case TWITCH:
 				new TwitchBot(parent);

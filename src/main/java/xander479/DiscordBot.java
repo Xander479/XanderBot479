@@ -16,7 +16,7 @@ import org.w3c.dom.Document;
 import xander479.events.DiscordMessageEvent;
 
 public class DiscordBot {
-	
+	private static DiscordBot instance;
 	final static String CONFIG_FILE = "src/main/resources/discord.xml";
 	final static String TOKEN;
 	static String prefix;
@@ -35,11 +35,17 @@ public class DiscordBot {
 	static JFrame frame;
 	Frame parent;
 	
-	public DiscordBot(Frame parent) {
+	private DiscordBot(Frame parent) {
 		this.parent = parent;
 		api = new DiscordApiBuilder().setToken(TOKEN).login().join();
 		api.addMessageCreateListener(new DiscordMessageEvent());
 		createAndDisplayGUI();
+	}
+	
+	public static synchronized DiscordBot getInstance(Frame parent) {
+		if(instance != null) return instance;
+		instance = new DiscordBot(parent);
+		return instance;
 	}
 	
 	// Creates the GUI to confirm the bot is running.
