@@ -21,6 +21,7 @@ import com.github.twitch4j.TwitchClientBuilder;
 import xander479.events.twitch.StartupEvent;
 
 public class TwitchBot {
+	private static TwitchBot instance;
 	private final static String CONFIG_FILE = "src/main/resources/twitch.xml";
 	private static Document config;
 	private static String CHANNEL_NAME;
@@ -43,7 +44,7 @@ public class TwitchBot {
 	static JFrame frame;
 	Frame parent;
 	
-	public TwitchBot(Frame parent) {
+	private TwitchBot(Frame parent) {
 		this.parent = parent;
 		TwitchClient client = TwitchClientBuilder.builder()
 				.withClientId(CLIENT_ID)
@@ -57,6 +58,12 @@ public class TwitchBot {
 		
 		createAndDisplayGUI();
 		client.getChat().joinChannel(CHANNEL_NAME);
+	}
+	
+	public static synchronized TwitchBot getInstance(Frame parent) {
+		if(instance != null) return instance;
+		instance = new TwitchBot(parent);
+		return instance;
 	}
 	
 	void createAndDisplayGUI() {

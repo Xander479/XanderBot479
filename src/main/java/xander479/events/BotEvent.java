@@ -27,7 +27,7 @@ public class BotEvent implements ActionListener {
 				DiscordBot.getInstance(parent);
 				break;
 			case TWITCH:
-				new TwitchBot(parent);
+				TwitchBot.getInstance(parent);
 				break;
 			case TWITTER:
 				TwitterBot.getInstance(parent);
