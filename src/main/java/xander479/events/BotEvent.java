@@ -30,7 +30,7 @@ public class BotEvent implements ActionListener {
 				new TwitchBot(parent);
 				break;
 			case TWITTER:
-				new TwitterBot(parent);
+				TwitterBot.getInstance(parent);
 				break;
 			default:
 				System.err.println("Invalid int input to constructor");

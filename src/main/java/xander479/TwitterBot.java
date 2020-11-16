@@ -11,11 +11,17 @@ import xander479.events.TweetEvent;
 
 public class TwitterBot {
 	public final static int TWITTER_CHAR_LIMIT = 280;
+	private static TwitterBot instance;
 	Frame parent;
 	
-	public TwitterBot(Frame parent) {
-		this.parent = parent;
+	private TwitterBot(Frame parent) {
 		createAndDisplayGUI();
+	}
+	
+	public static synchronized TwitterBot getInstance(Frame parent) {
+		if(instance != null) return instance;
+		instance = new TwitterBot(parent);
+		return instance;
 	}
 	
 	public static JLabel charsLeft;
